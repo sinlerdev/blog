@@ -174,7 +174,7 @@ def main():
 
     # Default parameters.
     params = {
-        'base_path': '',
+        'base_path': 'blog-site',
         'subtitle': 'Site',
         'author': 'Sinlernick',
         'site_url': 'http://localhost:8000',
