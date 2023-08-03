@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+
+<channel>
+<title>Blog</title>
+<link>http://localhost:8000/</link>
+<description>Grow with Technology</description>
+
+<item>
+<title>I am a blog writer now</title>
+<link>http://localhost:8000/blog/New-blog/</link>
+<description>
+<![CDATA[
+<p>
+As you can imagine, I have got tired of writing articles and then posting them to my write-ups' github repository. This is expected, as the&nbsp;<a href="http://localhost:8000/blog/New-blog/">...</a>
+</p>
+<p><a href="http://localhost:8000/blog/New-blog/">Read More</a></p>
+]]>
+</description>
+<pubDate>Thu, 03 Aug 2023 00:00:00 +0000</pubDate>
+</item>
+
+
+</channel>
+</rss>
