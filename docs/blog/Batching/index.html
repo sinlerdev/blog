@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Why Batch Processing Matters - Site</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" type="text/css" href="/blog-site/css/style.css">
+</head>
+
+<body id="Batching">
+
+<nav>
+<section>
+    <span class="home">
+        <a href="/blog-site/">Home</a>
+    </span>
+    <span class="links">
+        <a href="/blog-site/blog/">Blog</a>
+    </span>
+</section>
+</nav>
+
+<main>
+<article>
+<h1><a href="/blog-site/blog/Batching/">Why Batch Processing Matters</a></h1>
+<p class="meta">Published on 2023-08-04 by <b>Sinlernick</b></p>
+<p>Let's assume you are sinlernick, and you are working on a new optimization trick for your State management library.</p>
+<p>Before diving into the solution, let's first understand the world-ending problem.</p>
+<h2>The Problem</h2>
+<p>Let's assume you got a Compute object that is computing something extremely expensive. An example like this will do:</p>
+<pre><code class="language-lua">    -- Niche details related to Vinum are omitted.
+    local input1 = Hold(LastPosition)
+    local input2 = Hold(CurrentPosition)
+
+    local expensiveComputation = Compute(function(use)
+        -- This is some very expensive computation!
+        return findDistance(use(input1), use(input2))
+    end)
+</code></pre>
+<p>There aren't any performance issues with the example with relation to Vinum's internals. Everything should be fine! Well, everything is technically fine, until of course, you need to update both <code>input1</code> and <code>input2</code>.</p>
+<p>This is where Vinum tells you &quot;Its not my problem pal!&quot;, and forces you to have this unoptimized mess.</p>
+<h2>The Chosen One: Solution</h2>
+<p>Of course, since you are Sinlernick, you are probably sitting on your couch and thinking &quot;How to optimize this&quot;.</p>
+<p>Suddenly, an idea enters your brain; What if we allow users to batch write their objects?</p>
+<p>Of course, batching processing will be useful if we did not understand what performance issue we are facing here. In the previous example, in the event of setting the <code>inputX</code> siblings at the same time, Vinum would have to launch two updates, one after the other. The secondary update is considered wasteful here since an entire dependency tree recalculation was applied for the second time without a need.</p>
+<p>Implementating a method for solving this issue can be broken down into two different parts:</p>
+<ol>
+<li>Collect a group of state objects, and raw set their values</li>
+<li>Launch a single update per unique dependency tree. This is considered off-topic, so just understand its some voodoo magic for determining what dependents we should update.</li>
+</ol>
+<p>So you, as the good and considerate Maintainer, decided to implement a <code>batchSet</code> public function. This function is insanely simple, and what does it do is already outlined before.</p>
+<p>And now, the performance issue that was found in the previous code example has been fixed:</p>
+<pre><code class="language-lua">     -- Niche details related to Vinum are omitted.
+    local input1 = Hold(LastPosition)
+    local input2 = Hold(CurrentPosition)
+
+    local expensiveComputation = Compute(function(use)
+        -- This is some very expensive computation!
+        return findDistance(use(input1), use(input2))
+    end)
+
+    -- Now, expensiveComputation will only update once instead of twice!
+    batchSet({input1, input2}, Point.new(0, 10, 0), Point.new(10, 0, 0))
+</code></pre>
+<h1>Perspective Change</h1>
+<p><em>Insert some dramatic effects here</em></p>
+<p>Lets assume you are just a normal User of Vinum with the amazing new optimization method.</p>
+<p>Actually, you are not normal. You are an advocate of Batch processing, and probably world peace too.</p>
+<p>So obviously, you would want all writes of all stuff to be batched to the next frame. I mean, how could you not do this- Vinum just added a new flexible and barebones <code>batchSet</code> method that will just help you do that without you needing to touch Vinum's Internals Hell.</p>
+<p>So now, you, being the Advocate of Batch processing, you implemented a standardized <code>set</code> method to be used across all codebases, that secretly just add a some data to an internal data structure that is being read by a system like this:</p>
+<pre><code class="language-lua">    local ObjectsToSet = {} -- {object_1, object_2}
+    local Values = {} -- {value_1, value_2}
+    RunService.Stepped:Connect(function()
+        batchSet(ObjectsToSet, table.unpack(Values))
+
+        -- this is only for demonstraction purposes. In a real scenario, this could be optimized by a lot.
+        table.clear(ObjectsToSet)
+        table.clear(Values)
+    end)
+</code></pre>
+<p>And now, all writes to every state object are batched, and will be applied at the next frame!</p>
+<p><em>Insert some weird noises here</em></p>
+<p>Of course, since you are a true Batch Processing follower, you immediately implemented it without thinking about the actual requirements of the said system.</p>
+<p>And now, since any <em><strong>write request</strong></em> will be batched, your server systems are now &quot;lagging&quot; by one frame, and you have finally fallen to your enemy, that is Latency.</p>
+<h1>When Batching is Fine</h1>
+<p>Of course, batching processing everything isn't fine, as this could easily introduce some sort of data latency. Its always ideal to only &quot;batch-process&quot; some parts of your overall transactions, <em><strong>especially</strong></em> in a context like state management.</p>
+
+</article>
+
+</main>
+
+<footer>
+<section>
+<p>&copy; 2023 Sinlernick</p>
+<p>
+    <a href="https://twitter.com/sinlernick">Twitter</a>
+    <a href="https://github.com/sinlerdev">GitHub</a>
+</p>
+</section>
+</footer>
+
+</body>
+</html>
