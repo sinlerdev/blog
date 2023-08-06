@@ -7,6 +7,19 @@
 <description>Grow with Technology</description>
 
 <item>
+<title>Running Tests using Lune</title>
+<link>http://localhost:8000/blog/Running-Tests-lune/</link>
+<description>
+<![CDATA[
+<p>
+Motiviation Everybody loves running runtime runTests , and then see the test results right in front of them without the need for opening an entire&nbsp;<a href="http://localhost:8000/blog/Running-Tests-lune/">...</a>
+</p>
+<p><a href="http://localhost:8000/blog/Running-Tests-lune/">Read More</a></p>
+]]>
+</description>
+<pubDate>Sun, 06 Aug 2023 00:00:00 +0000</pubDate>
+</item>
+<item>
 <title>Why Batch Processing Matters</title>
 <link>http://localhost:8000/blog/Batching/</link>
 <description>
